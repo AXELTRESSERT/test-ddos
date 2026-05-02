@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDOS TRAP V1 | ALYA-QUEEN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ff0000;
+        }
+
+        .header h1 {
+            color: #ff0000;
+            font-size: 2rem;
+        }
+
+        .header p {
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .attack-box {
+            background: linear-gradient(135deg, #1a0000, #0a0a0a);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid #ff0000;
+        }
+
+        .attack-box h1 {
+            color: #ff0000;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .attack-box p {
+            color: #ff6600;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            background: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #00ff00;
+        }
+
+        .info-item span {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .stat-card h3 {
+            color: #ff0000;
+            font-size: 1.8rem;
+        }
+
+        .stat-card p {
+            color: #888;
+            margin-top: 5px;
+            font-size: 11px;
+        }
+
+        .log-container {
+            background: #000000;
+            border-radius: 10px;
+            border: 1px solid #333;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .log-header {
+            background: #111;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .log-header h2 {
+            color: #ff0000;
+            font-size: 1.2rem;
+        }
+
+        .log-header button {
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+
+        .reset-btn {
+            background: #ff6600 !important;
+        }
+
+        .log-area {
+            height: 350px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #0a0a0a;
+            border-left: 3px solid #ff0000;
+            font-family: monospace;
+            color: #0f0;
+        }
+
+        .log-entry .time {
+            color: #ff6600;
+        }
+
+        .log-entry .ip {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .log-entry .port {
+            color: #ff00ff;
+        }
+
+        .attack-log {
+            border-left-color: #ff0000;
+        }
+
+        .allowed-log {
+            border-left-color: #00ff00;
+        }
+
+        .top-attacker-box {
+            background: #000;
+            border-radius: 10px;
+            border: 1px solid #ff6600;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .top-header {
+            background: #1a1a1a;
+            padding: 12px;
+            border-bottom: 1px solid #ff6600;
+        }
+
+        .top-header h2 {
+            color: #ff6600;
+            font-size: 1.2rem;
+        }
+
+        .ip-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .ip-item {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ip-item .ip {
+            color: #0f0;
+            font-weight: bold;
+        }
+
+        .ip-item .count {
+            color: #ff6600;
+            background: #111;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .defense-bar {
+            background: #111;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #333;
+        }
+
+        .defense-bar h3 {
+            color: #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .bar {
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            width: 100%;
+            transition: width 0.5s;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .attack-box h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body id="mainBody">
+    <div class="container">
+        <div class="header">
+            <h1>🔴 DDOS TRAP V1 | ALYA-QUEEN</h1>
+            <p>[ Defense: ID Finger Required | Hanya muncul saat ada attack ]</p>
+        </div>
+
+        <div class="attack-box">
+            <h1 id="attackRequest">0</h1>
+            <p>📊 ATTACK REQUEST (Total serangan yang masuk)</p>
+            <div class="info-row">
+                <div class="info-item"><span id="currentIP">-</span> | Your IP</div>
+                <div class="info-item"><span id="currentPort">-</span> | Your Port</div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalRequests">0</h3>
+                <p>Total Attack</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="uniqueIPs">0</h3>
+                <p>Unique Attackers</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="activeNow">0</h3>
+                <p>Active Attackers</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="blockedCount">0</h3>
+                <p>Blocked</p>
+            </div>
+        </div>
+
+        <div class="log-container">
+            <div class="log-header">
+                <h2>📡 LIVE ATTACK LOG</h2>
+                <div>
+                    <button onclick="clearLogsOnly()">Clear Log</button>
+                    <button class="reset-btn" onclick="hardReset()">HARD RESET</button>
+                </div>
+            </div>
+            <div class="log-area" id="logArea">
+                <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] DDOS Trap V1 Aktif</div>
+                <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] ID Finger: IRFAN-CF-2026</div>
+                <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] Menunggu serangan dari Termux...</div>
+            </div>
+        </div>
+
+        <div class="top-attacker-box">
+            <div class="top-header">
+                <h2>🔝 TOP ATTACKERS (IP + PORT + COUNT)</h2>
+            </div>
+            <div class="ip-list" id="ipList">
+                <div style="color:#888; text-align:center; padding:20px;">Belum ada serangan</div>
+            </div>
+        </div>
+
+        <div class="defense-bar">
+            <h3>🛡️ DEFENSE STATUS</h3>
+            <div class="bar">
+                <div class="bar-fill" id="defenseBar" style="width: 100%"></div>
+            </div>
+            <p id="defenseText" style="color:#888; margin-top:10px;">Defense: ACTIVE</p>
+        </div>
+    </div>
+
+    <script>
+        // ========== STORAGE BARU ==========
+        const STORAGE_PREFIX = 'ddos_trap_clean_';
+        
+        let attackers = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'attackers') || '{}');
+        let totalRequests = parseInt(localStorage.getItem(STORAGE_PREFIX + 'totalRequests') || '0');
+        let blockedCount = parseInt(localStorage.getItem(STORAGE_PREFIX + 'blockedCount') || '0');
+        let attackRequest = parseInt(localStorage.getItem(STORAGE_PREFIX + 'attackRequest') || '0');
+        let verifiedIPs = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'verified') || '[]');
+        
+        let defenseBlocked = false;
+        let attackMode = false;
+        
+        const VALID_FINGER = "IRFAN-CF-2026";
+        
+        // Fungsi buat ngecek apakah ini beneran attack dari Termux atau cuma browsing biasa
+        function isRealAttack() {
+            // Deteksi berdasarkan User Agent, header, dan request pattern
+            const ua = navigator.userAgent.toLowerCase();
+            
+            // Ini tanda-tanda attack tools
+            const attackSignatures = [
+                'python-requests', 'curl', 'wget', 'http-client', 'httpx', 
+                'aiohttp', 'urllib', 'guzzle', 'java', 'okhttp',
+                'masscan', 'nmap', 'zmap', 'hydra', 'medusa',
+                'slowloris', 'goldeneye', 'hammer', 'loadtest'
+            ];
+            
+            for (let sig of attackSignatures) {
+                if (ua.includes(sig)) {
+                    return true;
+                }
+            }
+            
+            // Cek dari performa (multiple request dalam waktu cepat)
+            // Ini bakal di-track lewat session storage
+            let requestCount = parseInt(sessionStorage.getItem('requestCount') || '0');
+            requestCount++;
+            sessionStorage.setItem('requestCount', requestCount);
+            
+            let lastTime = parseInt(sessionStorage.getItem('lastRequestTime') || '0');
+            let now = Date.now();
+            let timeDiff = now - lastTime;
+            sessionStorage.setItem('lastRequestTime', now);
+            
+            // Kalo request lebih dari 5 dalam 1 detik, itu attack
+            if (requestCount > 5 && timeDiff < 200) {
+                return true;
+            }
+            
+            // Reset counter setiap 2 detik
+            setTimeout(() => {
+                sessionStorage.setItem('requestCount', '0');
+            }, 2000);
+            
+            return false;
+        }
+        
+        async function getMyIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                document.getElementById('currentIP').innerText = data.ip;
+                return data.ip;
+            } catch(e) {
+                document.getElementById('currentIP').innerText = 'Unknown';
+                return 'Unknown';
+            }
+        }
+        
+        function getRandomPort() {
+            return Math.floor(Math.random() * 65535) + 1024;
+        }
+        
+        function updateUI() {
+            document.getElementById('totalRequests').innerText = totalRequests;
+            document.getElementById('uniqueIPs').innerText = Object.keys(attackers).length;
+            document.getElementById('blockedCount').innerText = blockedCount;
+            document.getElementById('attackRequest').innerText = attackRequest;
+            updateTopAttackers();
+            
+            if (defenseBlocked) {
+                document.getElementById('defenseBar').style.width = '0%';
+                document.getElementById('defenseText').innerHTML = '💀 DEFENSE DOWN! Server redirecting...';
+            } else {
+                let percent = Math.max(0, 100 - (blockedCount * 2));
+                if (percent < 0) percent = 0;
+                document.getElementById('defenseBar').style.width = percent + '%';
+                document.getElementById('defenseText').innerHTML = `Defense: ${percent}% - ${percent > 50 ? 'ACTIVE' : percent > 20 ? 'WEAKENING' : 'CRITICAL'}`;
+            }
+        }
+        
+        function addLogToUI(entry) {
+            const logArea = document.getElementById('logArea');
+            if (!logArea) return;
+            
+            const logDiv = document.createElement('div');
+            let borderColor = '#ff0000';
+            if (entry.type === 'allowed') borderColor = '#00ff00';
+            if (entry.type === 'blocked') borderColor = '#ff6600';
+            logDiv.style.borderLeftColor = borderColor;
+            logDiv.className = 'log-entry';
+            logDiv.innerHTML = `
+                <span class="time">[${entry.time}]</span> 
+                ${entry.type === 'blocked' ? '🚫' : entry.type === 'allowed' ? '✅' : '🎯'} ${entry.msg}
+                ${entry.ip ? `<br>&nbsp;&nbsp;📍 IP: <span class="ip">${entry.ip}</span>` : ''}
+                ${entry.port ? `| Port: <span class="port">${entry.port}</span>` : ''}
+            `;
+            logArea.insertBefore(logDiv, logArea.firstChild);
+            
+            while (logArea.children.length > 150) {
+                logArea.removeChild(logArea.lastChild);
+            }
+        }
+        
+        function updateTopAttackers() {
+            const ipList = document.getElementById('ipList');
+            if (!ipList) return;
+            
+            const sorted = Object.entries(attackers)
+                .sort((a,b) => b[1].count - a[1].count)
+                .slice(0, 10);
+            
+            ipList.innerHTML = '';
+            
+            if (sorted.length === 0) {
+                ipList.innerHTML = '<div style="color:#888; text-align:center; padding:20px;">Belum ada serangan</div>';
+                return;
+            }
+            
+            sorted.forEach(([ip, data]) => {
+                const div = document.createElement('div');
+                div.className = 'ip-item';
+                div.innerHTML = `
+                    <div>
+                        <span class="ip">🔴 ${ip}</span>
+                        <span style="color:#ff00ff; font-size:11px;"> | Port: ${data.port || 'Unknown'}</span>
+                    </div>
+                    <div>
+                        <span class="count">${data.count} attacks</span>
+                    </div>
+                `;
+                ipList.appendChild(div);
+            });
+        }
+        
+        function clearLogsOnly() {
+            const logArea = document.getElementById('logArea');
+            if (logArea) {
+                logArea.innerHTML = `
+                    <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] Log dibersihkan!</div>
+                    <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] Menunggu serangan...</div>
+                `;
+            }
+        }
+        
+        function hardReset() {
+            if (confirm('⚠️ HARD RESET akan menghapus SEMUA data. Lanjutkan?')) {
+                attackers = {};
+                totalRequests = 0;
+                blockedCount = 0;
+                attackRequest = 0;
+                verifiedIPs = [];
+                defenseBlocked = false;
+                attackMode = false;
+                
+                localStorage.setItem(STORAGE_PREFIX + 'attackers', '{}');
+                localStorage.setItem(STORAGE_PREFIX + 'totalRequests', '0');
+                localStorage.setItem(STORAGE_PREFIX + 'blockedCount', '0');
+                localStorage.setItem(STORAGE_PREFIX + 'attackRequest', '0');
+                localStorage.setItem(STORAGE_PREFIX + 'verified', '[]');
+                
+                const logArea = document.getElementById('logArea');
+                if (logArea) {
+                    logArea.innerHTML = `
+                        <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] HARD RESET! Semua data direset</div>
+                        <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] Attack counter: 0</div>
+                        <div class="log-entry" style="border-left-color:#00ff00;">[SYSTEM] Menunggu serangan...</div>
+                    `;
+                }
+                
+                updateUI();
+            }
+        }
+        
+        function askFinger(ip, port) {
+            const userInput = prompt(`🔐 VERIFIKASI ID FINGER REQUIRED!\n\nIP: ${ip}\nPort: ${port}\n\nMasukkan ID Finger untuk melanjutkan:`);
+            
+            if (userInput === VALID_FINGER) {
+                if (!verifiedIPs.includes(ip)) {
+                    verifiedIPs.push(ip);
+                    localStorage.setItem(STORAGE_PREFIX + 'verified', JSON.stringify(verifiedIPs));
+                }
+                return true;
+            }
+            return false;
+        }
+        
+        // Defense utama - HANYA dijalankan kalo beneran attack
+        async function handleAttack(ip, port) {
+            totalRequests++;
+            attackRequest++;
+            localStorage.setItem(STORAGE_PREFIX + 'totalRequests', totalRequests);
+            localStorage.setItem(STORAGE_PREFIX + 'attackRequest', attackRequest);
+            
+            if (!attackers[ip]) {
+                attackers[ip] = { count: 0, port: port, firstSeen: new Date().toLocaleTimeString() };
+            }
+            attackers[ip].count++;
+            attackers[ip].port = port;
+            localStorage.setItem(STORAGE_PREFIX + 'attackers', JSON.stringify(attackers));
+            
+            // Cek apakah udah terverifikasi
+            if (verifiedIPs.includes(ip)) {
+                addLogToUI({
+                    time: new Date().toLocaleTimeString(),
+                    msg: `✅ ALLOWED | Attack dari ${ip} diterima (ID Finger sudah tervalidasi)`,
+                    ip: ip,
+                    port: port,
+                    type: 'allowed'
+                });
+                updateUI();
+                return;
+            }
+            
+            // Belum terverifikasi, minta finger
+            const verified = askFinger(ip, port);
+            
+            if (verified) {
+                addLogToUI({
+                    time: new Date().toLocaleTimeString(),
+                    msg: `✅ ALLOWED | Attack dari ${ip} diterima (ID Finger valid)`,
+                    ip: ip,
+                    port: port,
+                    type: 'allowed'
+                });
+            } else {
+                blockedCount++;
+                localStorage.setItem(STORAGE_PREFIX + 'blockedCount', blockedCount);
+                addLogToUI({
+                    time: new Date().toLocaleTimeString(),
+                    msg: `🚫 BLOCKED | Attack dari ${ip} ditolak (ID Finger salah)`,
+                    ip: ip,
+                    port: port,
+                    type: 'blocked'
+                });
+                
+                if (blockedCount >= 15) {
+                    defenseBlocked = true;
+                    document.getElementById('mainBody').innerHTML = `
+                        <div style="text-align:center; padding:100px 20px; background:#0a0a0a; min-height:100vh;">
+                            <h1 style="color:#ff0000; font-size:3rem;">ERROR: Connect_Time_Out</h1>
+                            <p style="color:#888; margin-top:20px;">Connection timed out</p>
+                            <p style="color:#ff6600; margin-top:20px;">Server overloaded by DDoS attack</p>
+                            <button onclick="location.reload()" style="margin-top:30px; background:#ff0000; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Reload</button>
+                        </div>
+                    `;
+                }
+            }
+            
+            updateUI();
+        }
+        
+        // Fungsi utama - nangkep request
+        async function captureRequest() {
+            if (defenseBlocked) return;
+            
+            // Cek apakah ini beneran attack atau cuma browsing biasa
+            const isAttack = isRealAttack();
+            
+            if (!isAttack) {
+                // Ini cuma browsing biasa, jangan dicatat sebagai attack
+                return;
+            }
+            
+            // Ini beneran attack! Proses
+            try {
+                let realIP = 'Unknown';
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    realIP = ipData.ip;
+                    document.getElementById('currentIP').innerText = realIP;
+                } catch(e) {}
+                
+                let realPort = getRandomPort();
+                try {
+                    const pc = new RTCPeerConnection({ iceServers: [] });
+                    pc.createDataChannel('');
+                    pc.createOffer().then(offer => pc.setLocalDescription(offer));
+                    pc.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            const match = event.candidate.candidate.match(/\s(\d+)$/);
+                            if (match) realPort = match[1];
+                            pc.close();
+                        }
+                    };
+                    setTimeout(() => pc.close(), 1000);
+                } catch(e) {}
+                document.getElementById('currentPort').innerText = realPort;
+                
+                await handleAttack(realIP, realPort);
+                
+                // Update active attackers
+                const now = Date.now();
+                let active = 0;
+                Object.keys(attackers).forEach(ip => {
+                    if (attackers[ip].lastSeen && (now - attackers[ip].lastSeen) < 5000) active++;
+                    attackers[ip].lastSeen = now;
+                });
+                document.getElementById('activeNow').innerText = active + 1;
+                if (attackers[realIP]) attackers[realIP].lastSeen = now;
+                localStorage.setItem(STORAGE_PREFIX + 'attackers', JSON.stringify(attackers));
+                
+            } catch(e) {
+                console.log('Capture error:', e);
+            }
+        }
+        
+        // Interval buat capture attack (tapi cuma kalo beneran ada serangan)
+        let attackCheckInterval = setInterval(() => {
+            if (!defenseBlocked) {
+                captureRequest();
+            }
+        }, 500);
+        
+        // Update active attackers setiap detik
+        setInterval(() => {
+            if (!defenseBlocked) {
+                const now = Date.now();
+                let active = 0;
+                Object.keys(attackers).forEach(ip => {
+                    if (attackers[ip].lastSeen && (now - attackers[ip].lastSeen) < 5000) {
+                        active++;
+                    }
+                });
+                document.getElementById('activeNow').innerText = active;
+                updateUI();
+            }
+        }, 1000);
+        
+        getMyIP();
+        updateUI();
+        
+        console.log(`
+        ╔════════════════════════════════════════════════════════╗
+        ║     DDOS TRAP V1 FIXED!                               ║
+        ║     Request hanya tercatat jika beneran ATTACK        ║
+        ║     Browsing biasa TIDAK akan masuk log              ║
+        ║     ID Finger: IRFAN-CF-2026                          ║
+        ╚════════════════════════════════════════════════════════╝
+        `);
+    </script>
+</body>
+</html>
